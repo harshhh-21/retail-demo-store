@@ -1,0 +1,46 @@
+name: Deploy to ECS
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build Image
+        run: |
+          docker build -t retail-app ./src/web-ui
+
+      - name: Tag Image
+        run: |
+          docker tag retail-app:latest \
+          ${{ steps.login-ecr.outputs.registry }}/retail-app:latest
+
+      - name: Push Image
+        run: |
+          docker push \
+          ${{ steps.login-ecr.outputs.registry }}/retail-app:latest
+
+      - name: Force New Deployment
+        run: |
+          aws ecs update-service \
+            --cluster retail-cluster \
+            --service retail-app-service \
+            --force-new-deployment
