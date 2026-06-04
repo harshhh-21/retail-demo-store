@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link v-if="!user" to="/auth" class="user-dropdown-button login-button btn">Sign In</router-link>
+    <router-link v-if="!user" to="/auth" class="user-dropdown-button login-button btn">Check IN</router-link>
 
     <button
       v-if="user"
