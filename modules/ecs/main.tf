@@ -54,7 +54,7 @@ resource "aws_ecs_task_definition" "app" {
     {
       name  = "retail-app"
 
-      image = "${var.ecr_repository_url}:v1"
+      image = "${var.ecr_repository_url}:latest"
 
       essential = true
 
