@@ -33,12 +33,12 @@ jobs:
       - name: Tag Image
         run: |
           docker tag retail-app:latest \
-          ${{ steps.login-ecr.outputs.registry }}/retail-app:latest
+          ${{ steps.login-ecr.outputs.registry }}/retail-app:v1
 
       - name: Push Image
         run: |
           docker push \
-          ${{ steps.login-ecr.outputs.registry }}/retail-app:latest
+          ${{ steps.login-ecr.outputs.registry }}/retail-app:v1
 
       - name: Force New Deployment
         run: |
